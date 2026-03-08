@@ -1,0 +1,27 @@
+[package]
+name = "sse-parser"
+version = "0.1.0"
+edition = "2024"
+description = "A streaming Server-Sent Events parser with WebAssembly bindings."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+compact_str = { version = "0.9", features = ["serde"] }
+memchr = "2.7"
+serde = { version = "1.0.228", features = ["derive"] }
+smallvec = "1.13"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+serde-wasm-bindgen = "0.6.5"
+wasm-bindgen = "=0.2.108"
+
+[dev-dependencies]
+divan = "0.1"
+insta = "1.43"
+
+[[bench]]
+name = "parser"
+harness = false

@@ -1,0 +1,21 @@
+---
+source: tests/parser_snapshot.rs
+expression: "(events, parser.last_event_id(), parser.retry())"
+---
+(
+    [
+        Event {
+            event: "status",
+            data: "hello\nworld",
+            id: Some(
+                "7",
+            ),
+        },
+    ],
+    Some(
+        "7",
+    ),
+    Some(
+        1500,
+    ),
+)

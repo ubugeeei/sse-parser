@@ -1,0 +1,57 @@
+{
+  "name": "sse-parser",
+  "version": "0.1.0",
+  "description": "A Rust-powered streaming Server-Sent Events parser for Node.js and the browser.",
+  "keywords": [
+    "eventsource",
+    "rust",
+    "server-sent-events",
+    "sse",
+    "wasm"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:wasm && tsdown && pnpm run copy:wasm",
+    "build:wasm": "cargo build --release --target wasm32-unknown-unknown && wasm-bindgen --target web --typescript --out-dir wasm/pkg target/wasm32-unknown-unknown/release/sse_parser.wasm",
+    "build:wasm:dev": "cargo build --target wasm32-unknown-unknown && wasm-bindgen --target web --typescript --out-dir wasm/pkg target/wasm32-unknown-unknown/debug/sse_parser.wasm",
+    "copy:wasm": "rm -rf dist/wasm && mkdir -p dist/wasm && cp -R wasm/pkg dist/wasm/pkg",
+    "lint": "oxlint --tsconfig tsconfig.json --type-aware --type-check index.ts parser.ts types.ts wasm-loader.ts scripts test",
+    "lint:rust": "cargo clippy --all-targets -- -D warnings",
+    "format": "oxfmt package.json tsconfig.json tsdown.config.ts vitest.config.ts index.ts parser.ts types.ts wasm-loader.ts scripts test",
+    "format:check": "oxfmt --check package.json tsconfig.json tsdown.config.ts vitest.config.ts index.ts parser.ts types.ts wasm-loader.ts scripts test",
+    "test": "pnpm run build:wasm:dev && vitest run",
+    "test:watch": "pnpm run build:wasm:dev && vitest",
+    "test:rust": "cargo test",
+    "bench:rust": "cargo bench --bench parser",
+    "bench:wasm": "pnpm run build && node --experimental-strip-types scripts/bench.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "oxfmt": "^0.28.0",
+    "oxlint": "^1.43.0",
+    "oxlint-tsgolint": "^0.16.0",
+    "tsdown": "^0.20.3",
+    "typescript": "^5.7.3",
+    "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@10.9.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
